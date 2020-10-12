@@ -1,4 +1,4 @@
-import { place, move, left, right, Position, Direction } from './lib'
+import { place, move, left, right, run, Position, Direction } from './lib'
 
 const { NORTH, SOUTH, EAST, WEST } = Direction
 
@@ -140,5 +140,23 @@ describe('right', () => {
       // @ts-ignore
       expect(() => right({ x: 0, y: 0, direction: 'foobaz' })).toThrowError('invalid direction')
     })
+  })
+})
+
+// ${['REPORT']}                                    | ${{}}
+// ${['MOVE']}                                      | ${{}}
+// ${['LEFT']}                                      | ${{}}
+// ${['RIGHT']}                                     | ${{}}
+// ${['RIGHT', 'REPORT']}                           | ${{}}
+// ${['MOVE', 'PLACE 0,0,NORTH', 'LEFT', 'REPORT']} | ${{ x: 0, y: 0, direction: WEST }}
+describe('run', () => {
+  test.each`
+    commandInputs                            | expectedOutput
+    ${['PLACE 0,0,NORTH', 'MOVE']}           | ${{}}
+    ${['PLACE 0,0,NORTH', 'MOVE', 'REPORT']} | ${{ x: 0, y: 1, direction: NORTH }}
+    ${['PLACE 0,0,NORTH', 'LEFT', 'REPORT']} | ${{ x: 0, y: 0, direction: WEST }}
+    ${['PLACE 2,3,SOUTH', 'REPORT']}         | ${{ x: 2, y: 3, direction: SOUTH }}
+  `('running $commandInputs, it shows $expectedOutput', ({ commandInputs, expectedOutput }) => {
+    expect(run(commandInputs)).toEqual(expectedOutput)
   })
 })

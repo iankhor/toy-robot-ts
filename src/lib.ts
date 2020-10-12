@@ -7,6 +7,8 @@ export enum Direction {
   WEST = 'WEST',
 }
 
+type CommandInput = 'PLACE' | 'MOVE'
+
 export type Position = {
   x: number
   y: number
@@ -33,6 +35,29 @@ function forward(coordinate: number) {
 
 function backward(coordinate: number) {
   return isValidCoordinate(coordinate - 1) ? coordinate - 1 : coordinate
+}
+
+function executeMove(command: string, position?: Position) {
+  const commands = {
+    PLACE: place,
+    LEFT: left,
+    RIGHT: right,
+    MOVE: move,
+  } as Record<string, any>
+
+  return commands[command](position)
+}
+
+function parseInput(input: string) {
+  const [command, rawArgs] = input.split(' ')
+
+  if (command === 'PLACE') {
+    const [x, y, direction] = rawArgs.split(',')
+
+    return { command, position: { x: parseInt(x), y: parseInt(y), direction } }
+  } else {
+    return { command }
+  }
 }
 
 export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: Direction.NORTH }) {
@@ -96,4 +121,24 @@ export function right(position: Position) {
     default:
       throw new Error('invalid direction')
   }
+}
+
+export function run(inputs: string[]) {
+  let currentPosition = {} as Position
+
+  inputs.forEach((i) => {
+    const { command, position } = parseInput(i)
+
+    switch (command) {
+      case 'PLACE':
+        currentPosition = executeMove(command, position as Position)
+        break
+      case 'MOVE':
+      case 'LEFT':
+      case 'RIGHT':
+        currentPosition = executeMove(command, currentPosition)
+    }
+  })
+
+  return inputs.includes('REPORT') ? currentPosition : {}
 }
