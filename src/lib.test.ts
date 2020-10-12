@@ -1,4 +1,4 @@
-import { place, move, Position, Direction } from './lib'
+import { place, move, left, right, Position, Direction } from './lib'
 
 const { NORTH, SOUTH, EAST, WEST } = Direction
 
@@ -83,6 +83,60 @@ describe('move', () => {
       }
     )
   })
+
+  describe('invalid direction', () => {
+    test.each`
+      x    | y    | direction
+      ${0} | ${0} | ${'somewhere over the rainbow'}
+    `('throws an error', ({ x, y, direction }) => {
+      expect(() => move({ x, y, direction })).toThrowError('invalid direction')
+    })
+  })
+})
+
+describe('left', () => {
+  test.each`
+    x    | y    | direction | expectedDirection
+    ${2} | ${2} | ${NORTH}  | ${WEST}
+    ${2} | ${2} | ${WEST}   | ${SOUTH}
+    ${2} | ${2} | ${SOUTH}  | ${EAST}
+    ${2} | ${2} | ${EAST}   | ${NORTH}
+  `(
+    'rotates 90 degrees counterclockwise from $direction to $expectedDirection and maintaining position at ($x, $y)',
+    ({ direction, expectedDirection, ...coordinates }) => {
+      expect(left({ ...coordinates, direction })).toMatchObject({
+        ...coordinates,
+        direction: expectedDirection,
+      })
+    }
+  )
+
+  describe('invalid direction', () => {
+    test.each`
+      x    | y    | direction
+      ${0} | ${0} | ${'somewhere over the rainbow'}
+    `('throws an error', ({ x, y, direction }) => {
+      expect(() => move({ x, y, direction })).toThrowError('invalid direction')
+    })
+  })
+})
+
+describe('right', () => {
+  test.each`
+    x    | y    | direction | expectedDirection
+    ${2} | ${2} | ${NORTH}  | ${EAST}
+    ${2} | ${2} | ${EAST}   | ${SOUTH}
+    ${2} | ${2} | ${SOUTH}  | ${WEST}
+    ${2} | ${2} | ${WEST}   | ${NORTH}
+  `(
+    'rotates 90 degrees clockwise from $direction to $expectedDirection and maintaining position at ($x, $y)',
+    ({ direction, expectedDirection, ...coordinates }) => {
+      expect(right({ ...coordinates, direction })).toMatchObject({
+        ...coordinates,
+        direction: expectedDirection,
+      })
+    }
+  )
 
   describe('invalid direction', () => {
     test.each`
