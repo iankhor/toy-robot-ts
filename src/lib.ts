@@ -123,10 +123,14 @@ export function right(position: Position) {
   }
 }
 
-export function run(inputs: string[]) {
+function parseInputs(inputs: string) {
+  return inputs.split('\n')
+}
+
+export function run(rawInputCommands: string): Position[] {
   let currentPosition = {} as Position
 
-  return inputs.map((i): null | Position => {
+  const output = parseInputs(rawInputCommands).map((i): null | Position => {
     const { command, position: placePosition } = parseInput(i)
 
     switch (command) {
@@ -144,4 +148,6 @@ export function run(inputs: string[]) {
         return null
     }
   })
+
+  return output.filter(Boolean) as Position[]
 }

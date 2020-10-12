@@ -17,9 +17,7 @@ describe('entering commands and obtaining an output of the robot location', () =
     expect(commandInputTextbox).toHaveValue('PLACE 2,2,NORTH\n')
   })
 
-  it.todo('validates user input')
-
-  fit('outputs robot location', () => {
+  it('outputs robot location', () => {
     render(<App />)
 
     const commandInputTextbox = screen.getByRole('textbox', { name: /command input/i })
@@ -28,11 +26,13 @@ describe('entering commands and obtaining an output of the robot location', () =
     user.type(commandInputTextbox, 'MOVE{enter}')
     user.type(commandInputTextbox, 'REPORT')
 
-    // const runButton = screen.getByRole('button', { name: /run/i })
+    const runButton = screen.getByRole('button', { name: /run/i })
 
-    // user.click(runButton)
+    user.click(runButton)
 
-    // const output = screen.getByText('Output: 0,1,NORTH')
-    // expect(output).toBeInTheDocument()
+    const output = screen.getByText('Output: 2,3,NORTH')
+    expect(output).toBeInTheDocument()
   })
+
+  it.todo('validates user input')
 })

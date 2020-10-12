@@ -1,19 +1,23 @@
-import { parse } from 'path'
 import React, { useState, ChangeEvent } from 'react'
-import './App.css'
+import { run, Position } from './lib'
 
-function App() {
+function App(): JSX.Element {
   const [commands, setCommands] = useState<string>('')
+  const [outputs, setOutputs] = useState<Position[]>([])
 
   function onChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setCommands(e.target.value.toUpperCase())
   }
 
+  function renderOuputs() {
+    return outputs.map((o) => <div key={`${o.x},${o.y},${o.direction}`}>{`Output: ${o.x},${o.y},${o.direction}`}</div>)
+  }
+
   return (
     <>
       <textarea aria-label="command input" value={commands || ''} onChange={onChange} />
-      <button>Run</button>
-      <summary role="summary"></summary>
+      <button onClick={() => setOutputs(run(commands))}>Run</button>
+      {renderOuputs()}
     </>
   )
 }
