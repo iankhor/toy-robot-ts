@@ -7,12 +7,17 @@ export enum Direction {
   WEST = 'WEST',
 }
 
-type CommandInput = 'PLACE' | 'MOVE'
+type CommandInput = 'PLACE' | 'MOVE' | 'LEFT' | 'RIGHT' | 'REPORT'
 
 export type Position = {
   x: number
   y: number
   direction: Direction
+}
+
+type SanitizedCommand = {
+  command: string
+  position?: Position
 }
 
 const { NORTH, SOUTH, EAST, WEST } = Direction
@@ -48,16 +53,54 @@ function executeMove(command: string, position?: Position) {
   return commands[command](position)
 }
 
-function parseInput(input: string) {
+function parseInputs(inputs: string) {
+  return inputs.split('\n')
+}
+
+function parseInput(input: string): SanitizedCommand {
   const [command, rawArgs] = input.split(' ')
 
   if (command === 'PLACE') {
     const [x, y, direction] = rawArgs.split(',')
 
-    return { command, position: { x: parseInt(x), y: parseInt(y), direction } }
+    return { command, position: { x: parseInt(x), y: parseInt(y), direction: direction as Direction } }
   } else {
     return { command }
   }
+}
+
+function sanitizeCommands(rawInputCommands: string): SanitizedCommand[] {
+  const commands = parseInputs(rawInputCommands.toUpperCase()).map((i) => parseInput(i))
+  const firstValidCommandIndex = commands.findIndex((c) => c.command === 'PLACE')
+
+  return commands.slice(firstValidCommandIndex)
+}
+
+function buildOutput(commands: SanitizedCommand[]): Position[] {
+  let currentPosition = {} as Position
+
+  return commands
+    .map((i): null | Position => {
+      switch (i.command) {
+        case 'PLACE':
+          currentPosition = executeMove(i.command, i.position as Position)
+          return null
+        case 'MOVE':
+        case 'LEFT':
+        case 'RIGHT':
+          currentPosition = executeMove(i.command, currentPosition)
+          return null
+        case 'REPORT':
+          return currentPosition
+        default:
+          return null
+      }
+    })
+    .filter(Boolean) as Position[]
+}
+
+function validateCommands(commands: SanitizedCommand[]) {
+  return commands.some((c) => c.command === 'PLACE')
 }
 
 export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: Direction.NORTH }) {
@@ -123,31 +166,8 @@ export function right(position: Position) {
   }
 }
 
-function parseInputs(inputs: string) {
-  return inputs.split('\n')
-}
-
 export function run(rawInputCommands: string): Position[] {
-  let currentPosition = {} as Position
+  const commands = sanitizeCommands(rawInputCommands)
 
-  const output = parseInputs(rawInputCommands).map((i): null | Position => {
-    const { command, position: placePosition } = parseInput(i)
-
-    switch (command) {
-      case 'PLACE':
-        currentPosition = executeMove(command, placePosition as Position)
-        return null
-      case 'MOVE':
-      case 'LEFT':
-      case 'RIGHT':
-        currentPosition = executeMove(command, currentPosition)
-        return null
-      case 'REPORT':
-        return currentPosition
-      default:
-        return null
-    }
-  })
-
-  return output.filter(Boolean) as Position[]
+  return validateCommands(commands) ? buildOutput(commands) : []
 }
