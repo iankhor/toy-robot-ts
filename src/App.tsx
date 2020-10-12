@@ -6,7 +6,7 @@ function App(): JSX.Element {
   const [outputs, setOutputs] = useState<Position[]>([])
 
   function onChange(e: ChangeEvent<HTMLTextAreaElement>) {
-    setCommands(e.target.value.toUpperCase())
+    setCommands(e.target.value)
   }
 
   function renderOuputs() {
