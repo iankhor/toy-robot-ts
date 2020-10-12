@@ -39,7 +39,7 @@ describe('place', () => {
       ${0}  | ${-1} | ${NORTH}
       ${0}  | ${0}  | ${'somewhere over the rainbow'}
     `('throws an error', ({ x, y, direction }) => {
-      expect(() => place({ x, y, direction })).toThrow()
+      expect(() => place({ x, y, direction })).toThrowError('invalid position')
     })
   })
 })
@@ -82,5 +82,14 @@ describe('move', () => {
         })
       }
     )
+  })
+
+  describe('invalid direction', () => {
+    test.each`
+      x    | y    | direction
+      ${0} | ${0} | ${'somewhere over the rainbow'}
+    `('throws an error', ({ x, y, direction }) => {
+      expect(() => move({ x, y, direction })).toThrowError('invalid direction')
+    })
   })
 })

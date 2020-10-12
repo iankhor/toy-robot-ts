@@ -25,6 +25,14 @@ function validatePosition(x: number, y: number, direction: Direction) {
   return isValidCoordinate(x) && isValidCoordinate(y) && isValidDirection(direction)
 }
 
+function forward(coordinate: number) {
+  return isValidCoordinate(coordinate + 1) ? coordinate + 1 : coordinate
+}
+
+function backward(coordinate: number) {
+  return isValidCoordinate(coordinate - 1) ? coordinate - 1 : coordinate
+}
+
 export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: Direction.NORTH }) {
   if (validatePosition(x, y, direction)) {
     return {
@@ -33,19 +41,24 @@ export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: D
       direction,
     }
   } else {
-    throw new Error()
+    throw new Error('invalid position')
   }
 }
 
 export function move(position: Position) {
-  switch (position.direction) {
-    case Direction.NORTH:
-      return { ...position, y: isValidCoordinate(position.y + 1) ? position.y + 1 : position.y }
-    case Direction.SOUTH:
-      return { ...position, y: isValidCoordinate(position.y - 1) ? position.y - 1 : position.y }
-    case Direction.EAST:
-      return { ...position, x: isValidCoordinate(position.x + 1) ? position.x + 1 : position.x }
-    case Direction.WEST:
-      return { ...position, x: isValidCoordinate(position.x - 1) ? position.x - 1 : position.x }
+  const { x, y, direction } = position
+  const { NORTH, SOUTH, EAST, WEST } = Direction
+
+  switch (direction) {
+    case NORTH:
+      return { ...position, y: forward(y) }
+    case SOUTH:
+      return { ...position, y: backward(y) }
+    case EAST:
+      return { ...position, x: forward(x) }
+    case WEST:
+      return { ...position, x: backward(x) }
+    default:
+      throw new Error('invalid direction')
   }
 }
