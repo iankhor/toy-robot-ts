@@ -149,13 +149,15 @@ describe('right', () => {
 // ${['RIGHT']}                                     | ${{}}
 // ${['RIGHT', 'REPORT']}                           | ${{}}
 // ${['MOVE', 'PLACE 0,0,NORTH', 'LEFT', 'REPORT']} | ${{ x: 0, y: 0, direction: WEST }}
+// ${['PLACE 0,0,NORTH', 'MOVE', 'REPORT']} | ${[{}, {}, { x: 0, y: 1, direction: NORTH }]}
+// ${['PLACE 0,0,NORTH', 'LEFT', 'REPORT']} | ${[{}, {}, { x: 0, y: 0, direction: WEST }]}
+// ${['PLACE 2,3,SOUTH', 'REPORT']}         | ${[{}, { x: 2, y: 3, direction: SOUTH }]}
 describe('run', () => {
   test.each`
-    commandInputs                            | expectedOutput
-    ${['PLACE 0,0,NORTH', 'MOVE']}           | ${{}}
-    ${['PLACE 0,0,NORTH', 'MOVE', 'REPORT']} | ${{ x: 0, y: 1, direction: NORTH }}
-    ${['PLACE 0,0,NORTH', 'LEFT', 'REPORT']} | ${{ x: 0, y: 0, direction: WEST }}
-    ${['PLACE 2,3,SOUTH', 'REPORT']}         | ${{ x: 2, y: 3, direction: SOUTH }}
+    commandInputs                                      | expectedOutput
+    ${['PLACE 0,0,NORTH', 'MOVE']}                     | ${[null, null]}
+    ${['PLACE 0,0,NORTH', 'MOVE', 'REPORT']}           | ${[null, null, { x: 0, y: 1, direction: NORTH }]}
+    ${['PLACE 0,0,NORTH', 'REPORT', 'MOVE', 'REPORT']} | ${[null, { x: 0, y: 0, direction: NORTH }, null, { x: 0, y: 1, direction: NORTH }]}
   `('running $commandInputs, it shows $expectedOutput', ({ commandInputs, expectedOutput }) => {
     expect(run(commandInputs)).toEqual(expectedOutput)
   })

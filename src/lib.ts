@@ -126,19 +126,22 @@ export function right(position: Position) {
 export function run(inputs: string[]) {
   let currentPosition = {} as Position
 
-  inputs.forEach((i) => {
-    const { command, position } = parseInput(i)
+  return inputs.map((i): null | Position => {
+    const { command, position: placePosition } = parseInput(i)
 
     switch (command) {
       case 'PLACE':
-        currentPosition = executeMove(command, position as Position)
-        break
+        currentPosition = executeMove(command, placePosition as Position)
+        return null
       case 'MOVE':
       case 'LEFT':
       case 'RIGHT':
         currentPosition = executeMove(command, currentPosition)
+        return null
+      case 'REPORT':
+        return currentPosition
+      default:
+        return null
     }
   })
-
-  return inputs.includes('REPORT') ? currentPosition : {}
 }
