@@ -65,13 +65,14 @@ describe('move', () => {
     )
   })
 
-  describe('moving outside the 5x5 table', () => {
+  describe('moving towards a position outside the 5x5 table', () => {
     test.each`
-      x    | y    | direction | expectedX | expectedY | expectedDirection
-      ${5} | ${5} | ${NORTH}  | ${5}      | ${5}      | ${NORTH}
-      ${0} | ${0} | ${SOUTH}  | ${0}      | ${0}      | ${SOUTH}
-      ${0} | ${5} | ${WEST}   | ${0}      | ${5}      | ${WEST}
-      ${5} | ${0} | ${EAST}   | ${5}      | ${0}      | ${EAST}
+      x     | y     | direction | expectedX | expectedY | expectedDirection
+      ${5}  | ${5}  | ${NORTH}  | ${5}      | ${5}      | ${NORTH}
+      ${0}  | ${0}  | ${SOUTH}  | ${0}      | ${0}      | ${SOUTH}
+      ${0}  | ${5}  | ${WEST}   | ${0}      | ${5}      | ${WEST}
+      ${5}  | ${0}  | ${EAST}   | ${5}      | ${0}      | ${EAST}
+      ${10} | ${10} | ${EAST}   | ${10}     | ${10}     | ${EAST}
     `(
       'does not move one unit forward in the $direction direction and maintains position at ($expectedX, $expectedY, $expectedDirection)',
       ({ x, y, direction, expectedX, expectedY, expectedDirection }) => {
@@ -85,11 +86,9 @@ describe('move', () => {
   })
 
   describe('invalid direction', () => {
-    test.each`
-      x    | y    | direction
-      ${0} | ${0} | ${'somewhere over the rainbow'}
-    `('throws an error', ({ x, y, direction }) => {
-      expect(() => move({ x, y, direction })).toThrowError('invalid direction')
+    it('throws an error', () => {
+      // @ts-ignore
+      expect(() => move({ x: 0, y: 0, direction: 'foobaz' })).toThrowError('invalid direction')
     })
   })
 })
@@ -112,11 +111,9 @@ describe('left', () => {
   )
 
   describe('invalid direction', () => {
-    test.each`
-      x    | y    | direction
-      ${0} | ${0} | ${'somewhere over the rainbow'}
-    `('throws an error', ({ x, y, direction }) => {
-      expect(() => move({ x, y, direction })).toThrowError('invalid direction')
+    it('throws an error', () => {
+      // @ts-ignore
+      expect(() => left({ x: 0, y: 0, direction: 'foobaz' })).toThrowError('invalid direction')
     })
   })
 })
@@ -139,11 +136,9 @@ describe('right', () => {
   )
 
   describe('invalid direction', () => {
-    test.each`
-      x    | y    | direction
-      ${0} | ${0} | ${'somewhere over the rainbow'}
-    `('throws an error', ({ x, y, direction }) => {
-      expect(() => move({ x, y, direction })).toThrowError('invalid direction')
+    it('throws an error', () => {
+      // @ts-ignore
+      expect(() => right({ x: 0, y: 0, direction: 'foobaz' })).toThrowError('invalid direction')
     })
   })
 })
