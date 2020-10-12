@@ -171,3 +171,13 @@ export function run(rawInputCommands: string): Position[] {
 
   return validateCommands(commands) ? buildOutput(commands) : []
 }
+
+function isValidCommand({ command, position }: SanitizedCommand): Boolean {
+  return command === 'PLACE' || command === 'MOVE' || command === 'LEFT' || command === 'RIGHT' || command === 'REPORT'
+}
+
+export function validate(rawInputCommands: string): Boolean {
+  const commands = sanitizeCommands(rawInputCommands)
+
+  return commands.every((c) => isValidCommand(c))
+}

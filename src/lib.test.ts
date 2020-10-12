@@ -1,4 +1,4 @@
-import { place, move, left, right, run, Position, Direction } from './lib'
+import { place, move, left, right, run, validate, Position, Direction } from './lib'
 
 const { NORTH, SOUTH, EAST, WEST } = Direction
 
@@ -174,5 +174,21 @@ describe('run', () => {
     `('running invalid $commandInputs, ignores input by returning nothing', ({ commandInputs, expectedOutput }) => {
       expect(run(commandInputs.join('\n'))).toEqual(expectedOutput)
     })
+  })
+})
+
+describe('validate', () => {
+  test.each`
+    commandInputs          | expectedOutput
+    ${['foobaz']}          | ${false}
+    ${['report']}          | ${true}
+    ${['REPORT']}          | ${true}
+    ${['PLACE']}           | ${false}
+    ${['PLACE 1,1,SOUTH']} | ${true}
+    ${['MOVE']}            | ${true}
+    ${['LEFT']}            | ${true}
+    ${['RIGHT']}           | ${true}
+  `('validates $commandInputs, and returns $expectedOutput', ({ commandInputs, expectedOutput }) => {
+    expect(validate(commandInputs.join('\n'))).toEqual(expectedOutput)
   })
 })
