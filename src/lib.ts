@@ -36,3 +36,16 @@ export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: D
     throw new Error()
   }
 }
+
+export function move(position: Position) {
+  switch (position.direction) {
+    case Direction.NORTH:
+      return { ...position, y: isValidCoordinate(position.y + 1) ? position.y + 1 : position.y }
+    case Direction.SOUTH:
+      return { ...position, y: isValidCoordinate(position.y - 1) ? position.y - 1 : position.y }
+    case Direction.EAST:
+      return { ...position, x: isValidCoordinate(position.x + 1) ? position.x + 1 : position.x }
+    case Direction.WEST:
+      return { ...position, x: isValidCoordinate(position.x - 1) ? position.x - 1 : position.x }
+  }
+}

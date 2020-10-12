@@ -1,5 +1,6 @@
-import { exitCode } from 'process'
-import { place, Position } from './lib'
+import { place, move, Position, Direction } from './lib'
+
+const { NORTH, SOUTH, EAST, WEST } = Direction
 
 describe('place', () => {
   describe('no initial position given supplied', () => {
@@ -7,7 +8,7 @@ describe('place', () => {
       expect(place()).toMatchObject({
         x: 0,
         y: 0,
-        direction: 'NORTH',
+        direction: NORTH,
       })
     })
   })
@@ -17,13 +18,13 @@ describe('place', () => {
       const position = {
         x: 3,
         y: 4,
-        direction: 'SOUTH',
+        direction: SOUTH,
       } as Position
 
       expect(place(position)).toMatchObject({
         x: 3,
         y: 4,
-        direction: 'SOUTH',
+        direction: SOUTH,
       })
     })
   })
@@ -31,14 +32,55 @@ describe('place', () => {
   describe('given invalid position values', () => {
     test.each`
       x     | y     | direction
-      ${6}  | ${0}  | ${'NORTH'}
-      ${0}  | ${6}  | ${'NORTH'}
-      ${-1} | ${0}  | ${'NORTH'}
-      ${0}  | ${-1} | ${'NORTH'}
-      ${0}  | ${-1} | ${'NORTH'}
+      ${6}  | ${0}  | ${NORTH}
+      ${0}  | ${6}  | ${NORTH}
+      ${-1} | ${0}  | ${NORTH}
+      ${0}  | ${-1} | ${NORTH}
+      ${0}  | ${-1} | ${NORTH}
       ${0}  | ${0}  | ${'somewhere over the rainbow'}
     `('throws an error', ({ x, y, direction }) => {
       expect(() => place({ x, y, direction })).toThrow()
     })
+  })
+})
+
+describe('move', () => {
+  describe('moving within the 5x5 table', () => {
+    test.each`
+      x    | y    | direction | expectedX | expectedY | expectedDirection
+      ${1} | ${1} | ${NORTH}  | ${1}      | ${2}      | ${NORTH}
+      ${1} | ${1} | ${SOUTH}  | ${1}      | ${0}      | ${SOUTH}
+      ${1} | ${1} | ${EAST}   | ${2}      | ${1}      | ${EAST}
+      ${1} | ${1} | ${WEST}   | ${0}      | ${1}      | ${WEST}
+      ${3} | ${3} | ${NORTH}  | ${3}      | ${4}      | ${NORTH}
+    `(
+      'moves one unit forward in the $direction direction from ($x, $y, $direction) to ($expectedX, $expectedY, $expectedDirection)',
+      ({ x, y, direction, expectedX, expectedY, expectedDirection }) => {
+        expect(move({ x, y, direction })).toMatchObject({
+          x: expectedX,
+          y: expectedY,
+          direction: expectedDirection,
+        })
+      }
+    )
+  })
+
+  describe('moving outside the 5x5 table', () => {
+    test.each`
+      x    | y    | direction | expectedX | expectedY | expectedDirection
+      ${5} | ${5} | ${NORTH}  | ${5}      | ${5}      | ${NORTH}
+      ${0} | ${0} | ${SOUTH}  | ${0}      | ${0}      | ${SOUTH}
+      ${0} | ${5} | ${WEST}   | ${0}      | ${5}      | ${WEST}
+      ${5} | ${0} | ${EAST}   | ${5}      | ${0}      | ${EAST}
+    `(
+      'does not move one unit forward in the $direction direction and maintains position at ($expectedX, $expectedY, $expectedDirection)',
+      ({ x, y, direction, expectedX, expectedY, expectedDirection }) => {
+        expect(move({ x, y, direction })).toMatchObject({
+          x: expectedX,
+          y: expectedY,
+          direction: expectedDirection,
+        })
+      }
+    )
   })
 })
