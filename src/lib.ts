@@ -59,8 +59,9 @@ function parseInputs(inputs: string) {
 
 function parseInput(input: string): SanitizedCommand {
   const [command, rawArgs] = input.split(' ')
+  const hasArgs = !!rawArgs?.length
 
-  if (command === 'PLACE') {
+  if (command === 'PLACE' && hasArgs) {
     const [x, y, direction] = rawArgs.split(',')
 
     return { command, position: { x: parseInt(x), y: parseInt(y), direction: direction as Direction } }
@@ -101,6 +102,16 @@ function buildOutput(commands: SanitizedCommand[]): Position[] {
 
 function validateCommands(commands: SanitizedCommand[]) {
   return commands.some((c) => c.command === 'PLACE')
+}
+
+function isValidCommand({ command, position }: SanitizedCommand): Boolean {
+  const validPlace = command === 'PLACE' && !!Object.keys(position || {}).length
+  const validMove = command === 'MOVE'
+  const validLeft = command === 'LEFT'
+  const validRight = command === 'RIGHT'
+  const validReport = command === 'REPORT'
+
+  return validPlace || validMove || validLeft || validRight || validReport
 }
 
 export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: Direction.NORTH }) {
@@ -172,11 +183,7 @@ export function run(rawInputCommands: string): Position[] {
   return validateCommands(commands) ? buildOutput(commands) : []
 }
 
-function isValidCommand({ command, position }: SanitizedCommand): Boolean {
-  return command === 'PLACE' || command === 'MOVE' || command === 'LEFT' || command === 'RIGHT' || command === 'REPORT'
-}
-
-export function validate(rawInputCommands: string): Boolean {
+export function validateInput(rawInputCommands: string): Boolean {
   const commands = sanitizeCommands(rawInputCommands)
 
   return commands.every((c) => isValidCommand(c))
