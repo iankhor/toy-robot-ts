@@ -12,8 +12,7 @@
 .command-input {
   padding: 2rem;
   border: 3px solid grey;
-
-  font-size: calc(1rem + 2vmin);
+  font-size: 1.2rem;
 }
 
 .center {
