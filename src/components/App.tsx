@@ -1,28 +1,10 @@
 import React, { useState, ChangeEvent } from 'react'
-import { run, Position, validateInput } from './../lib'
+import { run, validateInput } from './../lib'
+import { Position } from './../types'
+import Instructions from './Instructions'
 import './../stylesheets/App.css'
 
 const EXAMPLE_COMMANDS = ['PLACE 2,2,NORTH', 'MOVE', 'MOVE', 'RIGHT', 'RIGHT', 'MOVE', 'REPORT']
-
-function Instruction(): JSX.Element {
-  return (
-    <pre>
-      Simple Instructions
-      <ol>
-        <li>Enter commands in the textbox below or click on the prefill an example button</li>
-        <li>Click on run</li>
-      </ol>
-      Example Commands
-      <ul>
-        <li>PLACE 2,3,NORTH</li>
-        <li>MOVE</li>
-        <li>LEFT</li>
-        <li>RIGHT</li>
-        <li>REPORT</li>
-      </ul>
-    </pre>
-  )
-}
 
 function App(): JSX.Element {
   const [commands, setCommands] = useState<string>('')
@@ -53,7 +35,7 @@ function App(): JSX.Element {
 
   return (
     <div className="main center">
-      <Instruction />
+      <Instructions />
 
       <div className="command-input center">
         {renderOuputs()}
