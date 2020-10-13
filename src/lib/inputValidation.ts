@@ -21,13 +21,20 @@ function parseInput(input: string): SanitizedCommand {
 }
 
 function isValidCommand({ command, position }: SanitizedCommand): Boolean {
-  const validPlace = command === PLACE && position && validatePosition(position.x, position.y, position.direction)
-  const validMove = command === MOVE
-  const validLeft = command === LEFT
-  const validRight = command === RIGHT
-  const validReport = command === REPORT
-
-  return validPlace || validMove || validLeft || validRight || validReport
+  switch (command) {
+    case PLACE:
+      return !!position && validatePosition(position.x, position.y, position.direction)
+    case MOVE:
+      return true
+    case LEFT:
+      return true
+    case RIGHT:
+      return true
+    case REPORT:
+      return true
+    default:
+      return false
+  }
 }
 
 export function sanitizeCommands(rawInputCommands: string): SanitizedCommand[] {
