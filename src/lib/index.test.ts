@@ -1,4 +1,4 @@
-import { place, move, left, right, run, validateInput, Position, Direction } from './lib'
+import { place, move, left, right, run, validateInput, Position, Direction } from './'
 
 const { NORTH, SOUTH, EAST, WEST } = Direction
 

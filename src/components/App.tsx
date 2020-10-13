@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from 'react'
-import { run, Position, validateInput } from './lib'
-import './App.css'
+import { run, Position, validateInput } from './../lib'
+import './../stylesheets/App.css'
 
 const EXAMPLE_COMMANDS = ['PLACE 2,2,NORTH', 'MOVE', 'MOVE', 'RIGHT', 'RIGHT', 'MOVE', 'REPORT']
 
