@@ -3,27 +3,27 @@ import { Direction, Position } from './../types'
 const TABLE_SIZE = 5
 const { NORTH, SOUTH, EAST, WEST } = Direction
 
-function forward(coordinate: number) {
+function forward(coordinate: number): number {
   return isValidCoordinate(coordinate + 1) ? coordinate + 1 : coordinate
 }
 
-function backward(coordinate: number) {
+function backward(coordinate: number): number {
   return isValidCoordinate(coordinate - 1) ? coordinate - 1 : coordinate
 }
 
-function isValidDirection(direction?: Direction) {
-  return direction && Object.keys(Direction).includes(direction)
+function isValidDirection(direction?: Direction): Boolean {
+  return !!direction && Object.keys(Direction).includes(direction)
 }
 
 function isValidCoordinate(coord: number): Boolean {
   return coord >= 0 && coord <= TABLE_SIZE
 }
 
-export function validatePosition(x: number, y: number, direction: Direction) {
+export function validatePosition(x: number, y: number, direction: Direction): Boolean {
   return isValidCoordinate(x) && isValidCoordinate(y) && isValidDirection(direction)
 }
 
-export function move(position: Position) {
+export function move(position: Position): Position {
   const { x, y, direction } = position
 
   switch (direction) {
@@ -40,7 +40,7 @@ export function move(position: Position) {
   }
 }
 
-export function left(position: Position) {
+export function left(position: Position): Position {
   const { direction, ...coordinates } = position
 
   switch (direction) {
@@ -57,7 +57,7 @@ export function left(position: Position) {
   }
 }
 
-export function right(position: Position) {
+export function right(position: Position): Position {
   const { direction, ...coordinates } = position
 
   switch (direction) {
@@ -74,7 +74,7 @@ export function right(position: Position) {
   }
 }
 
-export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: Direction.NORTH }) {
+export function place({ x, y, direction }: Position = { x: 0, y: 0, direction: Direction.NORTH }): Position {
   if (validatePosition(x, y, direction)) {
     return {
       x,
