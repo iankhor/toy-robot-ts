@@ -22,12 +22,12 @@ type SanitizedCommand = {
 
 const { NORTH, SOUTH, EAST, WEST } = Direction
 
-function isValidCoordinate(coord: number) {
+function isValidCoordinate(coord: number): Boolean {
   return coord >= 0 && coord <= TABLE_SIZE
 }
 
-function isValidDirection(direction: Direction) {
-  return Object.keys(Direction).includes(direction)
+function isValidDirection(direction?: Direction) {
+  return direction && Object.keys(Direction).includes(direction)
 }
 
 function validatePosition(x: number, y: number, direction: Direction) {
@@ -100,12 +100,8 @@ function buildOutput(commands: SanitizedCommand[]): Position[] {
     .filter(Boolean) as Position[]
 }
 
-function validateCommands(commands: SanitizedCommand[]) {
-  return commands.some((c) => c.command === 'PLACE')
-}
-
 function isValidCommand({ command, position }: SanitizedCommand): Boolean {
-  const validPlace = command === 'PLACE' && !!Object.keys(position || {}).length
+  const validPlace = command === 'PLACE' && position && validatePosition(position.x, position.y, position.direction)
   const validMove = command === 'MOVE'
   const validLeft = command === 'LEFT'
   const validRight = command === 'RIGHT'
@@ -179,8 +175,9 @@ export function right(position: Position) {
 
 export function run(rawInputCommands: string): Position[] {
   const commands = sanitizeCommands(rawInputCommands)
+  const hasPlaceCommand = commands.some((c) => c.command === 'PLACE')
 
-  return validateCommands(commands) ? buildOutput(commands) : []
+  return hasPlaceCommand ? buildOutput(commands) : []
 }
 
 export function validateInput(rawInputCommands: string): Boolean {

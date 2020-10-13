@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent } from 'react'
 import { run, Position, validateInput } from './lib'
 import './App.css'
 
+const EXAMPLE_COMMANDS = ['PLACE 2,2,NORTH', 'MOVE', 'MOVE', 'RIGHT', 'RIGHT', 'MOVE', 'REPORT']
+
 function Instruction(): JSX.Element {
   return (
     <pre>
@@ -21,8 +23,6 @@ function Instruction(): JSX.Element {
     </pre>
   )
 }
-
-const EXAMPLE_COMMANDS = ['PLACE 2,2,NORTH', 'MOVE', 'MOVE', 'RIGHT', 'RIGHT', 'MOVE', 'REPORT']
 
 function App(): JSX.Element {
   const [commands, setCommands] = useState<string>('')
