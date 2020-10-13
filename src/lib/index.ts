@@ -1,26 +1,8 @@
+import { Direction, Position, CommandInput, SanitizedCommand } from './../types'
+
 const TABLE_SIZE = 5
-
-export enum Direction {
-  NORTH = 'NORTH',
-  SOUTH = 'SOUTH',
-  EAST = 'EAST',
-  WEST = 'WEST',
-}
-
-type CommandInput = 'PLACE' | 'MOVE' | 'LEFT' | 'RIGHT' | 'REPORT'
-
-export type Position = {
-  x: number
-  y: number
-  direction: Direction
-}
-
-type SanitizedCommand = {
-  command: string
-  position?: Position
-}
-
 const { NORTH, SOUTH, EAST, WEST } = Direction
+const { PLACE, MOVE, LEFT, RIGHT, REPORT } = CommandInput
 
 function isValidCoordinate(coord: number): Boolean {
   return coord >= 0 && coord <= TABLE_SIZE
@@ -72,7 +54,7 @@ function parseInput(input: string): SanitizedCommand {
 
 function sanitizeCommands(rawInputCommands: string): SanitizedCommand[] {
   const commands = parseInputs(rawInputCommands.trim().toUpperCase()).map((i) => parseInput(i))
-  const firstValidCommandIndex = commands.findIndex((c) => c.command === 'PLACE')
+  const firstValidCommandIndex = commands.findIndex((c) => c.command === PLACE)
 
   return commands.slice(firstValidCommandIndex)
 }
@@ -83,15 +65,15 @@ function buildOutput(commands: SanitizedCommand[]): Position[] {
   return commands
     .map((i): null | Position => {
       switch (i.command) {
-        case 'PLACE':
+        case PLACE:
           currentPosition = executeMove(i.command, i.position as Position)
           return null
-        case 'MOVE':
-        case 'LEFT':
-        case 'RIGHT':
+        case MOVE:
+        case LEFT:
+        case RIGHT:
           currentPosition = executeMove(i.command, currentPosition)
           return null
-        case 'REPORT':
+        case REPORT:
           return currentPosition
         default:
           return null
@@ -101,11 +83,11 @@ function buildOutput(commands: SanitizedCommand[]): Position[] {
 }
 
 function isValidCommand({ command, position }: SanitizedCommand): Boolean {
-  const validPlace = command === 'PLACE' && position && validatePosition(position.x, position.y, position.direction)
-  const validMove = command === 'MOVE'
-  const validLeft = command === 'LEFT'
-  const validRight = command === 'RIGHT'
-  const validReport = command === 'REPORT'
+  const validPlace = command === PLACE && position && validatePosition(position.x, position.y, position.direction)
+  const validMove = command === MOVE
+  const validLeft = command === LEFT
+  const validRight = command === RIGHT
+  const validReport = command === REPORT
 
   return validPlace || validMove || validLeft || validRight || validReport
 }
@@ -175,7 +157,7 @@ export function right(position: Position) {
 
 export function run(rawInputCommands: string): Position[] {
   const commands = sanitizeCommands(rawInputCommands)
-  const hasPlaceCommand = commands.some((c) => c.command === 'PLACE')
+  const hasPlaceCommand = commands.some((c) => c.command === PLACE)
 
   return hasPlaceCommand ? buildOutput(commands) : []
 }

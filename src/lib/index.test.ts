@@ -1,6 +1,8 @@
-import { place, move, left, right, run, validateInput, Position, Direction } from './'
+import { place, move, left, right, run, validateInput } from './'
+import { Direction, Position, CommandInput } from './../types'
 
 const { NORTH, SOUTH, EAST, WEST } = Direction
+const { PLACE, MOVE, LEFT, RIGHT, REPORT } = CommandInput
 
 describe('place', () => {
   describe('no initial position given supplied', () => {
@@ -150,14 +152,14 @@ describe('run', () => {
     })
 
     test.each`
-      commandInputs                                      | expectedOutput
-      ${['plAce 0,0,nortH', 'leFt', 'report']}           | ${[{ x: 0, y: 0, direction: WEST }]}
-      ${['PLACE 0,0,NORTH', 'LEFT', 'REPORT']}           | ${[{ x: 0, y: 0, direction: WEST }]}
-      ${['PLACE 0,0,NORTH', 'MOVE', 'REPORT']}           | ${[{ x: 0, y: 1, direction: NORTH }]}
-      ${['PLACE 0,0,NORTH', 'MOVE', 'REPORT']}           | ${[{ x: 0, y: 1, direction: NORTH }]}
-      ${['PLACE 2,3,SOUTH', 'REPORT']}                   | ${[{ x: 2, y: 3, direction: SOUTH }]}
-      ${['PLACE 0,0,NORTH', 'REPORT', 'MOVE', 'REPORT']} | ${[{ x: 0, y: 0, direction: NORTH }, { x: 0, y: 1, direction: NORTH }]}
-      ${['MOVE', 'PLACE 0,0,NORTH', 'MOVE', 'REPORT']}   | ${[{ x: 0, y: 1, direction: NORTH }]}
+      commandInputs                                | expectedOutput
+      ${['plAce 0,0,nortH', 'leFt', 'report']}     | ${[{ x: 0, y: 0, direction: WEST }]}
+      ${['PLACE 0,0,NORTH', LEFT, REPORT]}         | ${[{ x: 0, y: 0, direction: WEST }]}
+      ${['PLACE 0,0,NORTH', MOVE, REPORT]}         | ${[{ x: 0, y: 1, direction: NORTH }]}
+      ${['PLACE 0,0,NORTH', MOVE, REPORT]}         | ${[{ x: 0, y: 1, direction: NORTH }]}
+      ${['PLACE 2,3,SOUTH', REPORT]}               | ${[{ x: 2, y: 3, direction: SOUTH }]}
+      ${['PLACE 0,0,NORTH', REPORT, MOVE, REPORT]} | ${[{ x: 0, y: 0, direction: NORTH }, { x: 0, y: 1, direction: NORTH }]}
+      ${[MOVE, 'PLACE 0,0,NORTH', MOVE, REPORT]}   | ${[{ x: 0, y: 1, direction: NORTH }]}
     `('running valid $commandInputs, it shows an output', ({ commandInputs, expectedOutput }) => {
       expect(run(commandInputs.join('\n'))).toEqual(expectedOutput)
     })
@@ -165,12 +167,12 @@ describe('run', () => {
 
   describe('invalid inputs', () => {
     test.each`
-      commandInputs                  | expectedOutput
-      ${['REPORT']}                  | ${[]}
-      ${['MOVE']}                    | ${[]}
-      ${['LEFT']}                    | ${[]}
-      ${['RIGHT']}                   | ${[]}
-      ${['RIGHT', 'MOVE', 'REPORT']} | ${[]}
+      commandInputs            | expectedOutput
+      ${[REPORT]}              | ${[]}
+      ${[MOVE]}                | ${[]}
+      ${[LEFT]}                | ${[]}
+      ${[RIGHT]}               | ${[]}
+      ${[RIGHT, MOVE, REPORT]} | ${[]}
     `('running invalid $commandInputs, ignores input by returning nothing', ({ commandInputs, expectedOutput }) => {
       expect(run(commandInputs.join('\n'))).toEqual(expectedOutput)
     })
@@ -180,14 +182,14 @@ describe('run', () => {
 describe('validateInput', () => {
   test.each`
     commandInputs          | expectedOutput
-    ${['PLACE']}           | ${false}
+    ${[PLACE]}             | ${false}
     ${['foobaz']}          | ${false}
     ${['report']}          | ${true}
-    ${['REPORT']}          | ${true}
+    ${[REPORT]}            | ${true}
     ${['PLACE 1,1,SOUTH']} | ${true}
-    ${['MOVE']}            | ${true}
-    ${['LEFT']}            | ${true}
-    ${['RIGHT']}           | ${true}
+    ${[MOVE]}              | ${true}
+    ${[LEFT]}              | ${true}
+    ${[RIGHT]}             | ${true}
   `('validates $commandInputs, and returns $expectedOutput', ({ commandInputs, expectedOutput }) => {
     expect(validateInput(commandInputs.join('\n'))).toEqual(expectedOutput)
   })
