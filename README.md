@@ -2,6 +2,8 @@
 
 An app to display the position of a toy robot
 
+Deployed app at [https://toy-robot-yum.herokuapp.com](https://toy-robot-yum.herokuapp.com/)
+
 ---
 
 ## Animated demo below
@@ -18,7 +20,7 @@ An app to display the position of a toy robot
 
 ## Notes
 
-1. Chosen to use a create a react app bootstrapped by create-react-app, [CRA](https://github.com/facebook/create-react-app), to provide an interface for user input
+1. Chosen to create a react app bootstrapped by create-react-app, [CRA](https://github.com/facebook/create-react-app), to provide an interface for user input
 2. There is a button to prefill an example command sequence (to simulate test data to exercise the application)
 3. Simple input validation was implemented to cater for most cases of errorneous user input
 
