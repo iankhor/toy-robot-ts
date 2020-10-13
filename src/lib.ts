@@ -71,7 +71,7 @@ function parseInput(input: string): SanitizedCommand {
 }
 
 function sanitizeCommands(rawInputCommands: string): SanitizedCommand[] {
-  const commands = parseInputs(rawInputCommands.toUpperCase()).map((i) => parseInput(i))
+  const commands = parseInputs(rawInputCommands.trim().toUpperCase()).map((i) => parseInput(i))
   const firstValidCommandIndex = commands.findIndex((c) => c.command === 'PLACE')
 
   return commands.slice(firstValidCommandIndex)
